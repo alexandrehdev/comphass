@@ -1,0 +1,17 @@
+{
+    "name": "guide/comphass",
+    "description": "A routing package",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Guide\\Comphass\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "alexandrehdev",
+            "email": "alexandrehldev@gmail.com"
+        }
+    ],
+    "require": {}
+}
