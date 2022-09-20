@@ -14,8 +14,6 @@ class Route{
         return ["path" => $path,"action" => $action];
     }
 
-
-
     /**
      * error 
      * 
