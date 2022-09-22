@@ -1,51 +1,39 @@
 <?php
 namespace Guide\Comphass\Path;
-use Guide\Comphass\Server\Response;
 
 class Route{
     
 
-    private static $response = [];
+    private $response = [];
+
+
+    private $currentUrl;
+
+
+    public function __construct(){
+
+        $this->currentUrl = $_SERVER["REQUEST_URI"];
+
+    }
 
 
 
-
-    public static function buildResponse(string $path, callable $action){
+    public function buildResponse(string $path, callable $action){
         return ["path" => $path,"action" => $action];
     }
 
-    /**
-     * error 
-     * 
-     * @static
-     * @access public
-     * @return void
-     */
-    public static function error(){
-        $response = new Response();
-        echo $response->getErrorPage();
-    }
 
 
-
-    /**
-     * redirect 
-     * 
-     * @param string $path 
-     * @param callable $action 
-     * @static
-     * @access public
-     * @return void
-     */
     public static function redirect(string $path, callable $action){
-      self::$response = self::buildResponse($path,$action);
-      $response = explode(",", self::$response["path"]);
+      $self = new Static;
+      $self->response = $self->buildResponse($path,$action);
+      $response = explode(",", $self->response["path"]);
 
-        foreach($response as $result){
-            if($result == $_SERVER["REQUEST_URI"]){
-                echo $action();
-            }
-        }
+      foreach($response as $result){
+         if($result == $self->currentUrl){
+           $action();
+         }
+      }
 
     }
 
