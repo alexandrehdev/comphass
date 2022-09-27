@@ -5,7 +5,13 @@ use Guide\Comphass\Build\Builder;
 class View{
 
     
-    public static function pageContent(string $content, mixed &$vars) :string{
+    /**
+     * content
+     *
+     *@return string
+     *@access public
+     */
+    public static function content(string $content, mixed &$vars) :string{
         $builder = new Builder;
         $path = getcwd() . $builder->getPathResource() . "{$content}.painel.php";
         $view = (file_exists($path)) ? file_get_contents($path) : null;
