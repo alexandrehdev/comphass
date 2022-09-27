@@ -1,41 +1,62 @@
 <?php
 namespace Guide\Comphass\Path;
+use Guide\Comphass\Build\Structure;
+use Guide\Comphass\Page\View;
+use Guide\Comphass\Build\Builder;
 
-class Route{
+class Route extends Builder{
+
     
 
-    private $response = [];
+    private $static;
 
 
-    private $currentUrl;
+
+    private $url;
 
 
-    public function __construct(){
 
-        $this->currentUrl = $_SERVER["REQUEST_URI"];
+    public function __construct()
+    {
+        $this->static = $this->getStatic();
+        $this->url = $this->getRequestUrl();
+    }
 
+
+    
+    public static function page(string $path, string $view, array $vars){
+        $self = new Static();
+
+        $keys = array_map(function($item){
+            return "{{".$item."}}";
+        },array_keys($vars));
+
+        $file = getcwd().$self->resources.="{$view}.painel.php";
+        $content = (file_exists($file)) ? file_get_contents($file) : null;
+
+        if($path == $self->url){
+           echo str_replace($keys,array_values($vars),$content);
+        }
     }
 
 
 
-    public function buildResponse(string $path, callable $action){
-        return ["path" => $path,"action" => $action];
-    }
+    public static function redirect(string $path, callable $action) :void{
+       $self = new Static();
+       $statement = $self->getStatement();
+       $statement["path"] = $path;
+       $statement["action"] = $action;
+       $response = explode(",", $statement["path"]);
 
-
-
-    public static function redirect(string $path, callable $action){
-      $self = new Static;
-      $self->response = $self->buildResponse($path,$action);
-      $response = explode(",", $self->response["path"]);
-
-      foreach($response as $result){
-         if($result == $self->currentUrl){
-           $action();
-         }
-      }
+       foreach($response as $result){
+          if($result == $self->url){
+             $action();
+          }
+       }
 
     }
+
+
 
 
 
