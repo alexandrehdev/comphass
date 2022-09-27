@@ -1,4 +1,4 @@
 # comphass
 A routing package
 
-composer require guide/comphass:dev-master
+composer require guide/comphass
