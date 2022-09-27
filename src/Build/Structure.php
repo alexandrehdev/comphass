@@ -3,12 +3,9 @@
 namespace Guide\Comphass\Build;
 use Guide\Comphass\Build\Builder;
 
-class Structure{
+class Structure extends Builder{
 
     
-    private Builder $builder;
-
-
     private $resources;
 
     
@@ -16,9 +13,8 @@ class Structure{
 
 
     function __construct(){
-        $builder = new Builder;
-        $this->resources = $builder->getPathResource();
-        $this->route = $builder->getRouteFolder();
+        $this->resources = $this->getPathResource();
+        $this->route = $this->getRouteFolder();
     }
 
 
@@ -29,13 +25,10 @@ class Structure{
 
 
     public function initFolders() :void{
-       $resources = $this->resources;
-       $route = $this->route;
-
-       if(!is_dir(getcwd() . $resources)){
-          mkdir(getcwd() . $resources);
-       }elseif(!is_dir(getcwd() . $route)){
-          mkdir(getcwd() . $route);
+       if(!is_dir(getcwd() . $this->resources)){
+          mkdir(getcwd() . $this->resources);
+       }elseif(!is_dir(getcwd() . $this->route)){
+          mkdir(getcwd() . $this->route);
        }else{
            /* dont do anything */
        }
@@ -44,13 +37,10 @@ class Structure{
 
 
     public function initFiles() :void{
-       $resources = $this->resources;
-       $route = $this->route;
-
-       if(file_exists(getcwd() . $resources . "welcome.painel.php")){
-          fopen(getcwd() . $resources . "welcome.painel.php", 'w');
-       }elseif(file_exists(getcwd() . $route . "route.php")){
-          fopen(getcwd() . $route . "route.php", 'w');
+       if(file_exists(getcwd() . $this->resources . "welcome.painel.php")){
+          fopen(getcwd() . $this->resources . "welcome.painel.php", 'w');
+       }elseif(file_exists(getcwd() . $this->route . "route.php")){
+          fopen(getcwd() . $this->route . "route.php", 'w');
        }else{
            /* dont do anything */
        } 

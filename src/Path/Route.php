@@ -2,40 +2,30 @@
 namespace Guide\Comphass\Path;
 use Guide\Comphass\Build\Structure;
 use Guide\Comphass\Page\View;
+use Guide\Comphass\Build\Builder;
 
-class Route{
+class Route extends Builder{
+
     
 
-    private $response = [];
+    private $static;
+
 
 
     private $url;
 
 
-    private $path;
 
-
-    private View $view;
-
-
-
-    public static function getStatic(){
-        return new Static;
-    }
-
-
-
-    function __construct(){
-        (new Structure)->setUp();
-
-        $this->url = $_SERVER["REQUEST_URI"];
-        $this->view = new View;
+    public function __construct()
+    {
+        $this->static = $this->getStatic();
+        $this->url = $this->getRequestUrl();
     }
 
 
     
-    public static function view(string $path, string $view, array $vars){
-        $self = self::getStatic();
+    public static function page(string $path, string $view, array $vars){
+        $self = new Static();
 
         $keys = array_map(function($item){
             return "{{".$item."}}";
@@ -44,41 +34,29 @@ class Route{
         $file = getcwd().$self->resources.="{$view}.painel.php";
         $content = (file_exists($file)) ? file_get_contents($file) : null;
 
-        if($path == $self->currentUrl){
+        if($path == $self->url){
            echo str_replace($keys,array_values($vars),$content);
         }
     }
 
 
 
-    public static function redirect(string $path, callable $action){
-
-       $self = self::getStatic();
-       $statement = ["path" => $path, "action" => $action];
+    public static function redirect(string $path, callable $action) :void{
+       $self = new Static();
+       $statement = $self->getStatement();
+       $statement["path"] = $path;
+       $statement["action"] = $action;
        $response = explode(",", $statement["path"]);
 
        foreach($response as $result){
-         if($result == $self->url){
-            $action();
-         }
-      }
-
-    }
-
-
-    public static function get(string $page, array $action){
-       $self = self::getStatic(); 
-
-       $class = $action[0];
-       $method = $action[0];
-
-       if(class_exists($class)){
-           $object = new $class;
-           $object->{$method}();
-       }else{
-           View::pageContent($page, $action); 
+          if($result == $self->url){
+             $action();
+          }
        }
+
     }
+
+
 
 
 
