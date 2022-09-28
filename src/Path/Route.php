@@ -64,17 +64,19 @@ class Route {
     }
 
 
+    /* test */
     public static function get(string $url, mixed $action){
-       $self = self::getInstance();
+        $self = self::getInstance();
 
-       if(is_array($action)){
-         $object = new $action[0]();
-         $object->{$action[1]}();
+        if($url == $self->url){
+            if(is_array($action)){
+               $object = new $action[0]();
+               $object->{$action[1]}();
 
-       }elseif(is_callable($action)){
-           $action();
-       }
-
+            }elseif(is_callable($action)){
+               $action();
+            }
+        }
     }
 
 
