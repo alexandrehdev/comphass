@@ -7,13 +7,13 @@ class Route {
     private $url;
 
 
-    private $resources;
-
-
     private static $instance = null;
 
 
     private View $view;
+
+
+    private $statement;
 
     
 
@@ -22,6 +22,7 @@ class Route {
         $this->resources = "/resources/views/";
         $this->url = $_SERVER["REQUEST_URI"];
         $this->view = new View;
+        $this->statement = [];
     }
 
 
@@ -35,53 +36,28 @@ class Route {
 
     public static function page(string $path, string $view, array $vars){
         $self = self::getInstance();
-
-        $keys = array_map(function($item){
-            return "{{".$item."}}";
-        },array_keys($vars));
-
+        $keys = $self->view->generateKeys($vars);
         $content = $self->view->exists($view);
-
-        if($path == $self->url){
-           echo str_replace($keys,array_values($vars),$content);
-        }
+        $self->view->responsePath($path,$self->url,$keys,array_values($vars),$content);
     }
 
 
 
-    public static function redirect(string $path, callable $action) :void{
+    public static function get(string $path, callable $action) :mixed{
        $self = self::getInstance();
-
+       $statement = $self->statement;
        $statement = ["path" => $path, "action" => $action];
        $response = explode(",", $statement["path"]);
 
        foreach($response as $result){
-          if($result == $self->url){
-             $action();
-          }
+         return ($result == $self->url) ? $action() : '';
        }
 
     }
-
-
-    /* test */
-    public static function get(string $url, mixed $action){
-        $self = self::getInstance();
-
-        if($url == $self->url){
-            if(is_array($action)){
-               $object = new $action[0]();
-               $object->{$action[1]}();
-
-            }elseif(is_callable($action)){
-               $action();
-            }
-        }
-    }
-
-
-
-
-
+    
+    
 
 }
+
+
+
