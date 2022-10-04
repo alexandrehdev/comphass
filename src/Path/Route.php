@@ -17,6 +17,7 @@ class Route {
 
     public function __construct()
     {
+        $this->url = $_SERVER["REQUEST_URI"];
         $this->resources = "/resources/views/";
         $this->view = new View;
     }
