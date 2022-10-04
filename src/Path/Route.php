@@ -10,7 +10,10 @@ class Route {
 
     private View $view;
 
-
+    
+    private $url;
+    
+    
 
     public function __construct()
     {
