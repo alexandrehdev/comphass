@@ -1,11 +1,9 @@
 <?php
 namespace Guide\Comphass\Path;
+use Guide\Comphass\Engine\Response;
 use Guide\Comphass\Painel\View;
 
 class Route {
-
-    private $url;
-
 
     private static $instance = null;
 
@@ -13,16 +11,11 @@ class Route {
     private View $view;
 
 
-    private $statement;
-
-    
 
     public function __construct()
     {
         $this->resources = "/resources/views/";
-        $this->url = $_SERVER["REQUEST_URI"];
         $this->view = new View;
-        $this->statement = [];
     }
 
 
@@ -43,15 +36,19 @@ class Route {
 
 
 
-    public static function get(string $path, callable $action) :mixed{
-       $self = self::getInstance();
-       $statement = $self->statement;
-       $statement = ["path" => $path, "action" => $action];
-       $response = explode(",", $statement["path"]);
+    public static function get(string $path, mixed $action){
 
-       foreach($response as $result){
-         return ($result == $self->url) ? $action() : '';
-       }
+       $response = new Response;
+
+       switch ($action) {
+          case is_array($action):
+             $response->runArray($path,$action);
+             break;
+
+          case is_callable($action):
+             $response->runCallable($path,$action);
+             break;
+     }
 
     }
     
